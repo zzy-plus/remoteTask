@@ -1,23 +1,62 @@
 from flask import Flask, request
+import subprocess
+import re
+
+app = Flask(__name__)
 
 def getPidWithRE(target:str,pattern:str):
-    pass
-    # todo:使用正则匹配获取pid，返回一个数组
+    # r'LISTEN      ([0-9]+)/'
+    matches =  re.findall(pattern, target)
+    print(matches[0])
+    return matches[0]   #这里应当返回对应进程的pid
 
-def findTaskInfo(searchStr):
-    pass
-    # todo:使用netstat | grep 命令找到与searchStr匹配的结果，返回字符串
 
-def killTask():
-    pass
-    # todo:用pid结束任务
+def findTaskInfo(ip_port:str):
+    command = f'netstat -tulnp | grep {ip_port}'
+    return subprocess.run(command, shell=True, capture_output=True, text=True)
 
-def startTask():
+def killTask(pid):
+    command = f'kill {pid}'
+    output = subprocess.run(command, shell=True, capture_output=True, text=True)
+    # todo:根据执行结果返回True 或 False
+
+def startTask(start_command):
+    output = subprocess.run(start_command, shell=True, capture_output=True, text=True)
+    # todo
+
+
+def readFile(filePath):
+    with open(filePath, 'r', encoding='utf-8') as f:
+        pass
+
+def writeFile(filePath, data):
+    with open(filePath, 'w', encoding='utf-8') as f:
+        pass
+
+
+@app.route('/read', methods=['GET'])
+def fun_read():
     pass
-    # todo:启动任务
+
+@app.route('/write', methods=['GET'])
+def fun_write():
+    pass
+
+@app.route('/start', methods=['GET'])
+def fun_start():
+    pass
+
+@app.route('/stop', methods=['GET'])
+def dun_stop():
+    pass
+
+@app.route('/restart', methods=['GET'])
+def fun_restart():
+    pass
 
 
 
 if __name__ == '__main__':
+    app.run('0.0.0.0', 1020, debug=True)
     pass
     # todo:从远程传入参数，控制任务的启停
